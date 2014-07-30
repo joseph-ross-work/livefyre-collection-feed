@@ -1,0 +1,36 @@
+{
+  "name": "activity-to-content",
+  "description": "Various modules that make use of auth",
+  "author": "Livefyre <support@livefyre.com>",
+  "repository": "https://github.com/Livefyre/auth",
+  "contributors": {
+    "name": "Benjamin Goering",
+    "email": "ben@livefyre.com"
+  },
+  "version": "0.0.0-pre",
+  "devDependencies": {
+    "bower": "*",
+    "chai": "1.8.1",
+    "express": "*",
+    "jshint": "~1.1.0",
+    "mocha": "1.14.0",
+    "mocha-phantomjs": "3.1.6",
+    "phantomjs": "*",
+    "requirejs": "2.1.9",
+    "http-server": "^0.6.1",
+    "karma": "^0.12.2",
+    "karma-cajon": "0.0.1",
+    "karma-mocha": "^0.1.3",
+    "karma-phantomjs-launcher": "^0.1.2",
+    "karma-chrome-launcher": "^0.1.2",
+    "karma-mocha-debug": "^0.1.2"
+  },
+  "scripts": {
+    "build": "./node_modules/requirejs/bin/r.js -o ./config/build.conf.js",
+    "hint": "./node_modules/jshint/bin/jshint src/ test/spec/; echo",
+    "postinstall": "",
+    "start": "./node_modules/http-server/bin/http-server",
+    "test": "./node_modules/karma/bin/karma start",
+    "testp": "./node_modules/karma/bin/karma start --browsers=PhantomJS"
+  }
+}

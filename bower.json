@@ -1,0 +1,21 @@
+{
+  "name": "activity-to-content",
+  "version": "0.4.4-beta",
+  "main": "dist/auth.min.js",
+  "devDependencies": {
+    "almond": "0.2.6",
+    "cajon": "git@github.com:requirejs/cajon.git#~0.1.11",
+    "sinonjs": "~1.7.3",
+    "activity-mocks": "gobengo/activity-mocks"
+  },
+  "dependencies": {
+    "debug": "visionmedia/debug#~0.7.4",
+    "streamhub-sdk": "Livefyre/streamhub-sdk#~2.12.3",
+    "xtend": "Raynos/xtend#~3.0.0"
+  },
+  "resolutions": {
+    "base64": "~0.4.0",
+    "auth": "~0.2",
+    "view": "~1.3"
+  }
+}

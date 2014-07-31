@@ -4,9 +4,9 @@
     almond: 'lib/almond/almond'
   },
   baseUrl: '..',
-  name: 'activity-to-content',
+  name: 'collection-as-content',
   include: ['almond'],
-  out: '../dist/activity-to-content.min.js',
+  out: '../dist/collection-as-content.min.js',
   preserveLicenseComments: false,
   optimize: 'none',
   cjsTranslate: true,

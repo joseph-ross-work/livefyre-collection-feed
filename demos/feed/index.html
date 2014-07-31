@@ -1,0 +1,18 @@
+<html>
+<head>
+</head>
+<body>
+    <button id="auth-button">Log in</button>
+    <div id="feed"></div>
+<!-- scripts -->
+    <script src="http://cdn.livefyre.com/Livefyre.js"></script>
+    <script src="../../lib/cajon/cajon.js"></script>
+    <script src="../../config/requirejs.conf.js"></script>
+    <script>
+        require.config({
+            baseUrl: '../../'
+        });
+        require(['demos/feed/feed-demo']);
+    </script>
+</body>
+</html>

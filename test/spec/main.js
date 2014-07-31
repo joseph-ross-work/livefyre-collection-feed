@@ -1,8 +1,9 @@
-var activityToContent = require('activity-to-content');
+var activityToContent = require('collection-as-content');
 var activityMocks = require('activity-mocks');
 var assert = require('chai').assert;
+var xtend = require('xtend');
 
-describe('activity-to-content', function () {
+describe('collection-as-content', function () {
     it('is a function', function () {
         assert.instanceOf(activityToContent, Object);
         assert.instanceOf(activityToContent, Function);
@@ -13,6 +14,7 @@ describe('activity-to-content', function () {
         var content = activityToContent(activity);
         assert.equal(content.title, activity.object.title);
         assert.equal(content.url, activity.object.url);
+        assert.equal(content.body, '');
         // no author in the case of site as actor
         assert.equal(content.author, undefined);
         // collection is created propertly
@@ -28,5 +30,16 @@ describe('activity-to-content', function () {
             'collection.network', 'livefyre.com');
         assert.deepPropertyVal(content,
             'collection.url', activity.object.url);
+        assert.equal(content.id, activity.published);
+    });
+    it('can transform a site-post-collection activity with extensions', function () {
+        var activity = activityMocks.create('livefyre.sitePostCollection');
+        var content = activityToContent(activity);
+        assert.equal(content.attachments.length, 1);
+        assert.equal(content.attachments[0].type, 'photo');
+        assert.equal(content.title, activity.object.title);
+        assert.instanceOf(content.extensions, Object);
+        assert.equal(content.extensions.publisher, 'LA Times');
+        assert.typeOf(content.extensions.abstract, 'string');
     });
 });

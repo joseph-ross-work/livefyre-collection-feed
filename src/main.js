@@ -1,6 +1,7 @@
 module.exports = activityToContent;
 
 var Content = require('streamhub-sdk/content');
+var LivefyreContent = require('streamhub-sdk/content/types/livefyre-content');
 var Collection = require('streamhub-sdk/collection');
 
 /**
@@ -8,13 +9,48 @@ var Collection = require('streamhub-sdk/collection');
  * streamhub-sdk/content instance
  */
 function activityToContent(activity) {
-    var content = new Content();
-    content.set({
-        title: activity.object.title,
-        url: activity.object.url,
-        collection: collectionFromActivity(activity)
+    var content = new LivefyreContent('');
+    content.author = {};
+    content.set(contentPropsFromActivity(activity));
+    attachmentsFromActivity(activity).forEach(function (a) {
+        content.addAttachment(a);
     });
     return content;
+}
+
+function attachmentsFromActivity(activity) {
+    var attachmentUrl = collectionExtensions(activity.object).attachment
+    var oembed = {
+        "version": "1.0",
+        "type": "photo",
+        "url": attachmentUrl
+    };
+    return [oembed];
+}
+
+/**
+ * Return an object of the extensions to a
+ * collection
+ */
+function collectionExtensions(collection) {
+    var extensions = collection.links
+        .filter(function (link) {
+            return link.rel === 'extension';
+        })
+        .map(function (link) {
+            return link.object;
+        })[0];
+    return extensions;
+}
+
+function contentPropsFromActivity(activity) {
+    return {
+        id: activity.published || activity.tuuid,
+        title: activity.object.title,
+        url: activity.object.url,
+        collection: collectionFromActivity(activity),
+        extensions: collectionExtensions(activity.object)
+    };
 }
 
 function collectionFromActivity(activity) {

@@ -39,7 +39,6 @@ describe('collection-as-content', function () {
         assert.instanceOf(content.extensions, Object);
         assert.equal(content.extensions.publisher, 'LA Times');
         assert.typeOf(content.extensions.abstract, 'string');
-        debugger;
         assert.equal(content.body, content.extensions.abstract);
     });
 });

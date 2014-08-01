@@ -27,6 +27,9 @@ require.config({
     name: 'streamhub-sdk/content',
     location: 'lib/streamhub-sdk/src/content'
   },{
+    name: 'streamhub-sdk/modal',
+    location: 'lib/streamhub-sdk/src/modal'
+  },{
     name: 'streamhub-sdk/collection',
     location: 'lib/streamhub-sdk/src/collection'
   },{

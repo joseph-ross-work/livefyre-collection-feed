@@ -21,6 +21,7 @@ if (content.extensions && content.extensions.abstract) {
     })
 }
 
+debugger;
 var contentView = createContentView(content);
 
 contentView.setElement(document.getElementById('main'));

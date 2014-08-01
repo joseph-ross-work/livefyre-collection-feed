@@ -12,7 +12,7 @@ function activityToContent(activity) {
     var content = new LivefyreContent('');
     var extensions = collectionExtensions(activity.object);
     content.author = {
-        displayName: extensions ? extensions.publisher : undefined
+        displayName: extensions ? extensions.publisher || extensions.source : undefined
     }
     content.set(contentPropsFromActivity(activity));
     if (extensions) {
@@ -37,21 +37,37 @@ function extendContent(content, extensions) {
         content.addAttachment(a);
     });
     // abstract
-    if (extensions.abstract) {
-        props.body = extensions.abstract;
-    }
+    props.body = extensions.abstract || extensions.summary;
     content.set(props);
     return content;
 }
 
 function attachmentsFromExtensions(extensions) {
-    var attachmentUrl = extensions.attachment
+    var attachments = [];
+    var attachmentUrl = extensions.attachment || extensions.image;
+    if (attachmentUrl) {
+        attachments.push({
+            "version": "1.0",
+            "type": "photo",
+            "url": attachmentUrl
+        })
+    }
+    if (extensions.image_url) {
+        var _attachment = attachmentFromImage_Extensions(extensions);
+        if (_attachment) attachments.push(_attachment);
+    }
+    return attachments;
+}
+
+function attachmentFromImage_Extensions(extensions) {
     var oembed = {
-        "version": "1.0",
-        "type": "photo",
-        "url": attachmentUrl
-    };
-    return [oembed];
+        version: '1.0',
+        type: 'photo',
+        url: extensions.image_url,
+        height: extensions.image_height,
+        width: extensions.image_width
+    }
+    return oembed;
 }
 
 /**

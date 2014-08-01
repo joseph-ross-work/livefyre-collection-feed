@@ -19,6 +19,8 @@ require.config({
     'sockjs-client': 'node_modules/livefyre-stream-client/node_modules/sockjs-client/sockjs',
     'events-event-emitter': 'node_modules/livefyre-stream-client/node_modules/events-event-emitter/src/event-emitter',
     'util-extend': 'node_modules/livefyre-stream-client/node_modules/util-extend/extend',
+    json: 'lib/requirejs-plugins/src/json',
+    rework: 'lib/rework/rework'
   },
   packages: [{
     name: 'collection-feed',
@@ -91,6 +93,9 @@ require.config({
   },{
     name: "streamhub-editor/templates",
     location: "lib/streamhub-editor/src/templates"
+  },{
+    name: 'livefyre-package-attribute',
+    location: 'lib/livefyre-package-attribute/src'
   }],
   shim: {
     'sinon': {
@@ -102,5 +107,15 @@ require.config({
     'sockjs-client': {
         exports: 'SockJS'
     },
+    rework: {
+      exports: 'rework'
+    }
+  },
+  css: {
+    clearFileEachBuild: 'dist/collection-feed.min.css',
+    transformEach: {
+      requirejs: 'lib/livefyre-package-attribute/tools/prefix-css-requirejs',
+      node: 'lib/livefyre-package-attribute/tools/prefix-css-node'
+    }
   }
 });

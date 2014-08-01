@@ -3,6 +3,7 @@ module.exports = ActivityCollection;
 var ChronosStream = require('chronos-stream');
 var StreamClient = require('stream-client');
 var auth = require('auth');
+var PassThrough = require('stream/passthrough');
 
 /**
  * A streamhub-sdk/collection-like object that sources
@@ -15,12 +16,17 @@ function ActivityCollection(topic) {
 }
 
 /**
- * Create a stream that reads historical activities
+ * Create a stream that reads historical activities.
+ * Returns a PassThrough that will have the ChronosStream piped into it
+ * once a user is logged in.
  */
 ActivityCollection.prototype.createArchive = function () {
-    var archive = new ChronosStream(this._topic);
+    var archive = new PassThrough();
+    var topic = this._topic;
     withUser(function (user) {
-        archive.auth(user.get('token'));
+        var chronosStream = new ChronosStream(topic);
+        chronosStream.auth(user.get('token'));
+        chronosStream.pipe(archive);
     });
     return archive;
 };

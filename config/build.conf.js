@@ -9,6 +9,8 @@
   name: 'collection-feed',
   include: ['almond'],
   out: '../dist/collection-feed.min.js',
+  buildCSS: true,
+  separateCSS: true,
   preserveLicenseComments: false,
   optimize: 'none',
   cjsTranslate: true,

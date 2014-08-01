@@ -11,7 +11,8 @@
     "streamhub-feed": "Livefyre/streamhub-feed#~3.0.0",
     "require-less": "gobengo/require-less#~0.1.1",
     "require-css": "gobengo/require-css#~0.2.1",
-    "auth-interface": "Livefyre/auth-interface"
+    "auth-interface": "Livefyre/auth-interface",
+    "rework": "git://github.com/gobengo/rework.git#~0.21.1"
   },
   "dependencies": {
     "debug": "visionmedia/debug#~0.7.4",
@@ -19,7 +20,8 @@
     "xtend": "Raynos/xtend#~3.0.0",
     "chronos-stream": "Livefyre/chronos-stream#master",
     "stream-client": "Livefyre/stream-client",
-    "Base64.js": "ross-pfahler/Base64.js#~0.4.0"
+    "Base64.js": "ross-pfahler/Base64.js#~0.4.0",
+    "livefyre-package-attribute": "gobengo/livefyre-package-attribute"
   },
   "resolutions": {
     "base64": "~0.4.0",

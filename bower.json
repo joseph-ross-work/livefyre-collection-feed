@@ -15,7 +15,8 @@
   "dependencies": {
     "debug": "visionmedia/debug#~0.7.4",
     "streamhub-sdk": "Livefyre/streamhub-sdk#~2.12.3",
-    "xtend": "Raynos/xtend#~3.0.0"
+    "xtend": "Raynos/xtend#~3.0.0",
+    "chronos-stream": "Livefyre/chronos-stream#master"
   },
   "resolutions": {
     "base64": "~0.4.0",

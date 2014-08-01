@@ -14,9 +14,6 @@ describe('collection-as-content', function () {
         var content = activityToContent(activity);
         assert.equal(content.title, activity.object.title);
         assert.equal(content.url, activity.object.url);
-        assert.equal(content.body, '');
-        // no author in the case of site as actor
-        assert.equal(content.author, undefined);
         // collection is created propertly
         assert.typeOf(content.collection.createArchive, 'function');
         assert.ok(content.collection.readable);
@@ -31,6 +28,7 @@ describe('collection-as-content', function () {
         assert.deepPropertyVal(content,
             'collection.url', activity.object.url);
         assert.equal(content.id, activity.published);
+        assert.equal(Number(content.createdAt), Math.floor(Date.parse(activity.published)));
     });
     it('can transform a site-post-collection activity with extensions', function () {
         var activity = activityMocks.create('livefyre.sitePostCollection');
@@ -41,5 +39,7 @@ describe('collection-as-content', function () {
         assert.instanceOf(content.extensions, Object);
         assert.equal(content.extensions.publisher, 'LA Times');
         assert.typeOf(content.extensions.abstract, 'string');
+        debugger;
+        assert.equal(content.body, content.extensions.abstract);
     });
 });

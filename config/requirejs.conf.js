@@ -12,7 +12,8 @@ require.config({
     hgn: 'lib/requirejs-hogan-plugin/hgn',
     hogan: 'lib/hogan/web/builds/2.0.0/hogan-2.0.0.amd',
     text: 'lib/requirejs-text/text',
-    'mout': 'lib/mout/src'
+    'mout': 'lib/mout/src',
+    'chronos-stream': 'lib/chronos-stream/dist/chronos-stream'
   },
   packages: [{
     name: 'collection-as-content',

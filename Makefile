@@ -1,8 +1,8 @@
-.PHONY: all build
+.PHONY: all build activity-mocks chronos-stream
 
 all: build
 
-build: node_modules lib 
+build: node_modules lib activity-mocks chronos-stream
 	npm run lessc
 
 dist: build src requirejs.conf.js tools
@@ -16,7 +16,12 @@ node_modules: package.json
 
 lib: node_modules
 	./node_modules/bower/bin/bower install
+
+activity-mocks: lib
 	cd lib/activity-mocks && make dist
+
+chronos-stream: lib
+	cd lib/chronos-stream && make dist
 
 server: build
 	npm start

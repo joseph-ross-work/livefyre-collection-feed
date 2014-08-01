@@ -12,17 +12,40 @@ function activityToContent(activity) {
     var content = new LivefyreContent('');
     var extensions = collectionExtensions(activity.object);
     content.author = {
-        displayName: extensions.publisher
+        displayName: extensions ? extensions.publisher : undefined
     }
     content.set(contentPropsFromActivity(activity));
-    attachmentsFromActivity(activity).forEach(function (a) {
-        content.addAttachment(a);
-    });
+    if (extensions) {
+        extendContent(content, extensions);
+    }
     return content;
 }
 
-function attachmentsFromActivity(activity) {
-    var attachmentUrl = collectionExtensions(activity.object).attachment
+function extendContent(content, extensions) {
+    var props = {};
+    var author = content.author || {};
+    if ( ! extensions) {
+        return content;
+    }
+    // publisher is author
+    if (extensions.publisher) {
+        author.displayName = extensions.publisher;
+    }
+    props.author = author;
+    // attachments
+    attachmentsFromExtensions(extensions).forEach(function (a) {
+        content.addAttachment(a);
+    });
+    // abstract
+    if (extensions.abstract) {
+        props.body = extensions.abstract;
+    }
+    content.set(props);
+    return content;
+}
+
+function attachmentsFromExtensions(extensions) {
+    var attachmentUrl = extensions.attachment
     var oembed = {
         "version": "1.0",
         "type": "photo",
@@ -42,7 +65,13 @@ function collectionExtensions(collection) {
         })
         .map(function (link) {
             return link.object;
-        })[0];
+        })
+        .reduce(function (prev, next) {
+            Object.keys(next).forEach(function (key) {
+                prev[key] = next[key];
+            });
+            return prev;
+        }, {});
     return extensions;
 }
 
@@ -52,7 +81,8 @@ function contentPropsFromActivity(activity) {
         title: activity.object.title,
         url: activity.object.url,
         collection: collectionFromActivity(activity),
-        extensions: collectionExtensions(activity.object)
+        extensions: collectionExtensions(activity.object),
+        createdAt: new Date(Date.parse(activity.published))
     };
 }
 

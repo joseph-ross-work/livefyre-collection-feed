@@ -1,9 +1,8 @@
-var activityToContent = require('collection-as-content');
+var activityToContent = require('collection-feed').activityToContent;
 var activityMocks = require('activity-mocks');
 var assert = require('chai').assert;
-var xtend = require('xtend');
 
-describe('collection-as-content', function () {
+describe('collection-feed', function () {
     it('is a function', function () {
         assert.instanceOf(activityToContent, Object);
         assert.instanceOf(activityToContent, Function);

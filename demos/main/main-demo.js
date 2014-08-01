@@ -1,4 +1,4 @@
-var activityToContent = require('collection-as-content');
+var activityToContent = require('collection-feed');
 var activityMocks = require('activity-mocks');
 var ContentViewFactory = require('streamhub-sdk/content/content-view-factory');
 var asLivefyreContentView = require('streamhub-sdk/content/views/mixins/livefyre-content-view-mixin');

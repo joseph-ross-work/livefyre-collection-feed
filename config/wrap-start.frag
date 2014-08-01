@@ -16,7 +16,7 @@
         var f = factory();
         root.Livefyre = root.Livefyre || {};
  
-        root.Livefyre['collection-as-content'] = f;
+        root.Livefyre['collection-feed'] = f;
     }
 }(this, function () {
     //almond, and your modules will be inlined here

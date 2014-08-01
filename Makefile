@@ -5,9 +5,9 @@ all: build
 build: node_modules lib activity-mocks chronos-stream
 	npm run lessc
 
-dist: build src requirejs.conf.js tools
+dist: build src config/requirejs.conf.js config
 	mkdir -p dist
-	./node_modules/requirejs/bin/r.js -o ./tools/build.conf.js	
+	./node_modules/requirejs/bin/r.js -o ./config/build.conf.js	
 
 # if package.json changes, install
 node_modules: package.json

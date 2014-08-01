@@ -1,12 +1,14 @@
 ({
   mainConfigFile: 'requirejs.conf.js',
   paths: {
-    almond: 'lib/almond/almond'
+    almond: 'lib/almond/almond',
+    auth: 'lib/livefyre-auth/src/contrib/auth-later',
+    'auth/contrib': 'lib/auth/src/contrib'
   },
   baseUrl: '..',
-  name: 'collection-as-content',
+  name: 'collection-feed',
   include: ['almond'],
-  out: '../dist/collection-as-content.min.js',
+  out: '../dist/collection-feed.min.js',
   preserveLicenseComments: false,
   optimize: 'none',
   cjsTranslate: true,

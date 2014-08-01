@@ -13,13 +13,18 @@ require.config({
     hogan: 'lib/hogan/web/builds/2.0.0/hogan-2.0.0.amd',
     text: 'lib/requirejs-text/text',
     'mout': 'lib/mout/src',
-    'chronos-stream': 'lib/chronos-stream/dist/chronos-stream'
+    'chronos-stream': 'lib/chronos-stream/dist/chronos-stream',
+    'auth-interface': 'lib/auth-interface/index',
+    'stream-client': 'node_modules/livefyre-stream-client/src/StreamClient',
+    'sockjs-client': 'node_modules/livefyre-stream-client/node_modules/sockjs-client/sockjs',
+    'events-event-emitter': 'node_modules/livefyre-stream-client/node_modules/events-event-emitter/src/event-emitter',
+    'util-extend': 'node_modules/livefyre-stream-client/node_modules/util-extend/extend',
   },
   packages: [{
-    name: 'collection-as-content',
+    name: 'collection-feed',
     location: 'src'
   },{
-    name: 'collection-as-content-tests',
+    name: 'collection-feed-tests',
     location: 'test'
   },{
     name: 'streamhub-sdk',
@@ -93,6 +98,9 @@ require.config({
     },
     jquery: {
         exports: '$'
-    }
+    },
+    'sockjs-client': {
+        exports: 'SockJS'
+    },
   }
 });

@@ -59,6 +59,10 @@ function attachmentsFromExtensions(extensions) {
  * collection
  */
 function collectionExtensions(collection) {
+    var links = collection && collection.links;
+    if ( ! links) {
+        return {};
+    }
     var extensions = collection.links
         .filter(function (link) {
             return link.rel === 'extension';

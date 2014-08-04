@@ -102,7 +102,8 @@ function contentPropsFromActivity(activity) {
         url: activity.object.url,
         collection: collectionFromActivity(activity),
         extensions: collectionExtensions(activity.object),
-        createdAt: new Date(Date.parse(activity.published))
+        createdAt: new Date(Date.parse(activity.published)),
+        tags: activity.object.tags
     };
 }
 

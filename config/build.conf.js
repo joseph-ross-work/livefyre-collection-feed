@@ -7,11 +7,17 @@
   },
   baseUrl: '..',
   name: 'collection-feed',
-  include: ['almond'],
+  include: ['almond', 'css'],
+  exclude: ['css/normalize', 'less/normalize'],
+  stubModules: ['text', 'hgn', 'json'],
   out: '../dist/collection-feed.min.js',
   buildCSS: true,
   separateCSS: true,
   preserveLicenseComments: false,
+  pragmasOnSave: {
+    excludeHogan: true,
+    excludeRequireCss: true
+  },
   optimize: 'none',
   cjsTranslate: true,
   uglify2: {

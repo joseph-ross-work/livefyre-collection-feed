@@ -20,7 +20,8 @@ require.config({
     'events-event-emitter': 'node_modules/livefyre-stream-client/node_modules/events-event-emitter/src/event-emitter',
     'util-extend': 'node_modules/livefyre-stream-client/node_modules/util-extend/extend',
     json: 'lib/requirejs-plugins/src/json',
-    rework: 'lib/rework/rework'
+    rework: 'lib/rework/rework',
+    'observer': 'lib/observer/src/observer'
   },
   packages: [{
     name: 'collection-feed',
@@ -67,6 +68,9 @@ require.config({
   },{
     name: 'streamhub-feed',
     location: 'lib/streamhub-feed/src'
+  },{
+    name: "streamhub-feed/styles",
+    location: "lib/streamhub-feed/src/css"
   },{
     name: 'thread',
     location: 'lib/thread/src'
@@ -116,6 +120,14 @@ require.config({
     transformEach: {
       requirejs: 'lib/livefyre-package-attribute/tools/prefix-css-requirejs',
       node: 'lib/livefyre-package-attribute/tools/prefix-css-node'
+    }
+  },
+  less: {
+    browserLoad: 'dist/collection-feed.min',
+    paths: ['lib'],
+    relativeUrls: true,
+    modifyVars: {
+      '@icon-font-path': "\"http://cdn.livefyre.com/libs/livefyre-bootstrap/v1.1.0/fonts/\""
     }
   }
 });

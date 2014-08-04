@@ -37,7 +37,7 @@ function extendContent(content, extensions) {
         content.addAttachment(a);
     });
     // abstract
-    props.body = extensions.abstract || extensions.summary;
+    props.body = extensions.abstract || extensions.summary || '';
     content.set(props);
     return content;
 }

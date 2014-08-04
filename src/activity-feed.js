@@ -4,11 +4,15 @@ var ContentListView = require('streamhub-sdk/content/views/content-list-view');
 var inherits = require('inherits');
 var activityToContent = require('./activity-to-content');
 var packageAttribute = require('./package-attribute');
-require('css!streamhub-sdk/css/style.css');
+var FeedContentViewFactory = require('streamhub-feed/content-view-factory');
+
+// collection-feed specific styles
+require('less!collection-feed/styles/styles.less');
 
 function ActivityFeed(opts) {
     opts = opts || {};
     ContentListView.call(this, opts);
+    this._contentViewFactory = new FeedContentViewFactory();
     packageAttribute.decorateModal(this.modal);
     if (opts.activities) {
         this._setActivities(opts.activities);
@@ -16,36 +20,42 @@ function ActivityFeed(opts) {
 }
 inherits(ActivityFeed, ContentListView);
 
+ActivityFeed.prototype.elClass += ' lf-collection-feed';
+
 ActivityFeed.prototype.add = function (activity) {
     var content = activityToContent(activity);
     return ContentListView.prototype.add.call(this, content);
 };
 
 ActivityFeed.prototype.createContentView = function (content) {
-    var contentView = ContentListView.prototype.createContentView.apply(this, arguments);
+    var contentView = this._contentViewFactory.createContentView(content);
+    // var contentView = ContentListView.prototype.createContentView.apply(this, arguments);
     contentView.render = (function (ogRender) {
         return function () {
             var ret = ogRender.apply(this, arguments);
-            debugger;
             renderTags.call(this);
             return ret;
         };
     }(contentView.render));
-    function renderTags() {
-        debugger;
-        var contentView = this;
-        var $body = contentView.$('.content-body');
-        var tagsEl = document.createElement('div');
-        tagsEl.classList.add('content-tags');
-        (content.tags || [])
-            .map(renderTag)
-            .forEach(function (el) {
-                tagsEl.appendChild(el);
-            });
-        $body.prepend(tagsEl);
-    }
     return contentView;
 };
+
+/**
+ * Call on a ContentView to render tags
+ */
+function renderTags() {
+    var contentView = this;
+    var content = contentView.content;
+    var $body = contentView.$('.content-body');
+    var tagsEl = document.createElement('div');
+    tagsEl.classList.add('content-tags');
+    (content.tags || [])
+        .map(renderTag)
+        .forEach(function (el) {
+            tagsEl.appendChild(el);
+        });
+    $body.prepend(tagsEl);
+}
 
 // render a tag object to an HTMLElement
 function renderTag(tag) {

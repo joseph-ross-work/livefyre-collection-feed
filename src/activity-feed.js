@@ -5,6 +5,7 @@ var inherits = require('inherits');
 var activityToContent = require('./activity-to-content');
 var packageAttribute = require('./package-attribute');
 var FeedContentViewFactory = require('streamhub-feed/content-view-factory');
+var sdkStyle = require('css!streamhub-sdk/css/style.css');
 
 // collection-feed specific styles
 require('less!collection-feed/styles/styles.less');

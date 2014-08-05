@@ -1,0 +1,17 @@
+<html>
+<head>
+</head>
+<body>
+    <button id="auth-button">Log in</button>
+    <div id="follow-buttons"></div>
+<!-- scripts -->
+    <script src="../../lib/cajon/cajon.js"></script>
+    <script src="../../config/requirejs.conf.js"></script>
+    <script>
+        require.config({
+            baseUrl: '../../'
+        });
+        require(['demos/follow-button/follow-button-demo']);
+    </script>
+</body>
+</html>

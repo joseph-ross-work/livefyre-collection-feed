@@ -41,8 +41,6 @@ ActivityCollection.prototype.createUpdater = function () {
     });
     var topic = this._topic;
     withUser(function (user) {
-        // TODO: Don't do this. It's probably a bug with stream-v4?
-        topic = topic.replace(/:site=(\d+)/,'');
         updater.connect(user.get('token'), topic);
     });
     return updater;

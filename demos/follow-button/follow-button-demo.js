@@ -41,9 +41,50 @@ var topics = subscriptions.map(function (subscription) {
 var followButtons = []
 topics.forEach(function (topic) {
     var button = new FollowButton({
-        topic: topic
+        topic: topic,
+        follow: function (subscription, errback) {
+          withUser(function (user) {
+            subscriptionsClient.create({
+              lftoken: user.get('token'),
+              // todo: followButton should support opts.subscription not opts.topic
+              subscriptions: [subscriptions[0]]
+            }, function (err, res) {
+              errback(err, res);
+            })
+          })
+        }
     });
     followButtons.push(button);
     button.render();
     followButtonsEl.appendChild(button.el);
 })
+
+var subscription = {
+  "to": "urn:livefyre:demo.fyre.co:site=362588:topic=los_angeles",
+  "type": "personalStream"
+};
+var subscriptionsClient = require('collection-feed/subscriptions-client');
+
+withUser(function (user) {
+  subscriptionsClient.get({
+    lftoken: user.get('token')
+  }, function (err, subs) {
+    console.log('subscriptions', subs);
+  });
+  subscriptionsClient.create({
+    lftoken: user.get('token'),
+    subscriptions: [subscription]
+  }, function (err, res) {
+    console.log('subscribed', res);
+  })
+})
+
+
+function withUser(callback) {
+  var user = auth.get('livefyre');
+  if (user) {
+    return callback(user);
+  } else {
+    auth.once('login.livefyre', callback);
+  }
+}

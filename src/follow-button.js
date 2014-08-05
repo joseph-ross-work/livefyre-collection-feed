@@ -13,6 +13,8 @@ function FollowButton(opts) {
     opts.label = opts.label || 'follow';
     this.topic = opts.topic;
     this._button = new Button(createFollowCommand(opts.topic));
+    this._follow = opts.follow || function (subscription, errback) { errback(); };
+    this._unfollow = opts.unfollow || function (subscription, errback) { errback(); };
     this._setFollowing(false);
     this._button.$el.addClass('lf-btn-default');
     this._button.$el.addClass('lf-btn-xs');
@@ -44,10 +46,10 @@ FollowButton.prototype._setFollowing = function (isFollowing) {
     var errback;
     console.log('_setFollowing', isFollowing);
     if (isFollowing) {
-        command = createUnfollowCommand();
+        command = createUnfollowCommand(this.topic, this._unfollow);
         errback = this._unfollowErrback.bind(this);
     } else {
-        command = createFollowCommand();
+        command = createFollowCommand(this.topic, this._follow);
         errback = this._followErrback.bind(this);
     }
     this._button._setCommand(command);
@@ -78,24 +80,28 @@ FollowButton.prototype._getLabel = function (isFollowing) {
     return isFollowing ? 'unfollow' : 'follow';
 }
 
-function createFollowCommand(topic) {
+function createFollowCommand(topic, follow) {
     var command = new Command(function (errback) {
         console.log('follow');
-        if (typeof errback !== 'function') {
-            return;
-        }
-        errback();
+        follow(topic, function (err) {
+            if (typeof errback !== 'function') {
+                return;
+            }
+            errback();
+        });
     });
     return command;
 }
 
-function createUnfollowCommand(topic) {
+function createUnfollowCommand(topic, unfollow) {
     var command = new Command(function (errback) {
         console.log('unfollow');
-        if (typeof errback !== 'function') {
-            return;
-        }
-        errback();
+        unfollow(function (err, res) {
+            if (typeof errback !== 'function') {
+                return;
+            }
+            errback();
+        });
     });
     return command;
 }

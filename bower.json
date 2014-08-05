@@ -9,7 +9,7 @@
     "activity-mocks": "gobengo/activity-mocks",
     "livefyre-auth": "Livefyre/livefyre-auth#~0.6.1",
     "streamhub-feed": "Livefyre/streamhub-feed#~3.0.0",
-    "require-less": "gobengo/require-less#~0.1.1",
+    "require-less": "gobengo/require-less#deponcss",
     "require-css": "gobengo/require-css#~0.2.1",
     "auth-interface": "Livefyre/auth-interface",
     "rework": "git://github.com/gobengo/rework.git#~0.21.1"
@@ -27,6 +27,7 @@
     "base64": "~0.4.0",
     "auth": "~0.2",
     "view": "~1.3",
-    "streamhub-sdk": "~2.12.3"
+    "streamhub-sdk": "~2.12.3",
+    "require-css": "transformEach2"
   }
 }

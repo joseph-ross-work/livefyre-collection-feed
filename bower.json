@@ -21,13 +21,15 @@
     "chronos-stream": "Livefyre/chronos-stream#master",
     "stream-client": "Livefyre/stream-client",
     "Base64.js": "ross-pfahler/Base64.js#~0.4.0",
-    "livefyre-package-attribute": "gobengo/livefyre-package-attribute"
+    "livefyre-package-attribute": "gobengo/livefyre-package-attribute",
+    "streamhub-ui": "Livefyre/streamhub-ui#0.1.2"
   },
   "resolutions": {
     "base64": "~0.4.0",
     "auth": "~0.2",
     "view": "~1.3",
     "streamhub-sdk": "~2.12.3",
-    "require-css": "transformEach2"
+    "require-css": "transformEach2",
+    "streamhub-ui": "0.1.2"
   }
 }

@@ -1,3 +1,4 @@
+var FollowButtonFactory = require('collection-feed/follow-button-factory');
 var createAuthButton = require('auth/contrib/auth-button');
 var FollowButton = require('collection-feed/follow-button');
 var auth = require('livefyre-auth');
@@ -12,10 +13,9 @@ auth.authenticate({
 var dropdownEl = document.getElementById('rosstest');
 var Dropdown = require('collection-feed/follow-dropdown');
 
+var fbFactory = new FollowButtonFactory();
 var drop = new Dropdown({
-  followButton: function (tag) {
-    return new FollowButton(tag);
-  },
+  followButton: fbFactory.create.bind(fbFactory),
   tags: [{
       "id": "urn:livefyre:livefyre.com:site=286470:topic=123",
       "displayName": "Topic 123",

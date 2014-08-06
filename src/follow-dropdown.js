@@ -15,7 +15,6 @@ var $ = require('jquery');
  */
 function Dropdown(opts) {
     View.apply(this, arguments);
-    this._followBtns = [];
     this._button = this._createButton();
     this._popover = null;
 }
@@ -40,13 +39,10 @@ Dropdown.prototype._createPopover = function () {
         parentEl: this.el
     });
     var $el = $('<ul />');
-    this._followBtns = this.opts.tags.map(function (tag) {
+    this.opts.tags.forEach(function (tag) {
         var li = $('<li>' + tag.displayName + '</li>');
-        var btn = this.opts.followButton(tag);
-        btn.setElement(li[0]);
-        btn.render();
+        li.append(this.opts.followButton(tag.id));
         $el.append(li);
-        return btn;
     }.bind(this));
 
     popover._position = 'bottom';
@@ -93,9 +89,6 @@ Dropdown.prototype.render = function() {
 /** @override */
 Dropdown.prototype.destroy = function () {
     View.prototype.destroy.call(this);
-    this._followBtns.forEach(function (btn) {
-        btn.destroy();
-    });
     this._popover && this._popover.destroy();
     this._button.destroy();
 };

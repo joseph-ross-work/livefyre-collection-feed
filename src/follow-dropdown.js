@@ -41,6 +41,7 @@ Dropdown.prototype._createPopover = function () {
     var popover = new Popover({
         parentEl: this._innerEl
     });
+    popover.resizeAndReposition = customPopoverResizeAndReposition;
     var $el = $('<ul />');
     this.opts.tags.forEach(function (tag) {
         var li = $('<li>' + tag.displayName + '</li>');
@@ -96,4 +97,42 @@ Dropdown.prototype.destroy = function () {
     View.prototype.destroy.call(this);
     this._popover && this._popover.destroy();
     this._button.destroy();
+};
+
+/**
+ * A custom version...
+ */
+function customPopoverResizeAndReposition(elem) {
+    // Position popover
+    var position = this[Popover.POSITION_FN_MAP[this._position]].call(this, elem);
+    var POSITION_PREFIX = Popover.CLASSES.POSITION_PREFIX;
+    position.width = this._getPopoverWidth(position.width);
+    this.$el.css(position).removeClass(function () {
+        var classes = [];
+        for (var pos in Popover.POSITIONS) {
+            if (Popover.POSITIONS.hasOwnProperty(pos)) {
+                classes.push(POSITION_PREFIX + Popover.POSITIONS[pos]);
+            }
+        }
+        return classes.join(' ');
+    }).addClass(POSITION_PREFIX + this._activePosition);
+
+    var boundingClientRect = this.el.getBoundingClientRect();
+    var windowWidth;
+    if (boundingClientRect.left < 0) {
+        this.$el.css('left', position.left - boundingClientRect.left+'px');
+    } else if (boundingClientRect.right > (windowWidth = window.innerWidth)) {
+        // THIS ELSE IF BLOCK IS WHATS ADDED FOR THIS PATCHED VERSION
+        // IN COLLECTION-FEED
+        this.$el.css('left', position.left - (boundingClientRect.right - windowWidth)+'px');
+    }
+
+    // Position popover arrow
+    var arrowEl = this.$el.find('.'+Popover.CLASSES.ARROW);
+    var popoverParentEl = $(this._parentEl)
+    var translateX = arrowEl.offset().left - popoverParentEl.offset().left - (popoverParentEl.outerWidth()/2) ;
+    var arrowLeft = parseInt(arrowEl.css('left'), 10);
+    arrowEl.css('left', (arrowLeft-translateX)+'px');
+
+    //this._scrollIntoPosition(position.top);
 };

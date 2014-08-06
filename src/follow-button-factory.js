@@ -6,7 +6,7 @@ var auth = require('auth');
 
 function FollowButtonFactory(opts) {
     opts = opts || {};
-    this._isFollowing = opts.isFollowing || createIsFollowing();
+    this._subscriptions = createSubscriptions();
 }
 
 FollowButtonFactory.prototype.create = function (subscription) {
@@ -15,11 +15,12 @@ FollowButtonFactory.prototype.create = function (subscription) {
             to: subscription
         };
     }
+    var subscriptions = this._subscriptions;
     var button = new FollowButton({
         subscription: subscription,
-        isFollowing: this._isFollowing,
-        follow: follow,
-        unfollow: unfollow
+        isFollowing: subscriptions.isFollowing,
+        follow: subscriptions.follow,
+        unfollow: subscriptions.unfollow
     });
     button.render();
     auth.on('logout', function () {
@@ -60,51 +61,98 @@ function unfollow(subscription, errback) {
   })
 }
 
-function createIsFollowing() {
+function createSubscriptions() {
   var subscriptions = null;
   var gettingSubscriptions = false;
   var onSubscriptions = [];
   function finishAll() {
     var cb;
-    while (cb = onSubscriptions.pop()) {
+    while (cb = onSubscriptions.shift()) {
       cb();
     }
   }
-  return function (subscription, errback) {
-    function finish(err) {
-      errback(err, subscriptionsContain(subscriptions, subscription))
-    }
-    withUser(function (user) {
-      var token = user.get('token');
-      // once we have it memoized, just call errback
-      if (subscriptions) {
-        return finish();
+  return {
+    follow: function (subscription, errback) {
+      follow(subscription, function (err, res) {
+        if (err) return errback(err, res);
+        if (subscriptions === null) {
+          // once they're gotten, ensure our local cache
+          // knows about this subscription
+          onSubscriptions.push(addSubscription);
+          return;
+        }
+        // we has subscriptions
+        addSubscription();
+        errback(err, res);
+
+        function addSubscription() {
+          if ( ! subscriptionsContain(subscriptions, subscription)) {
+            subscriptions.push(subscription);
+          }
+        }
+      })
+    },
+    unfollow: function (subscription, errback) {
+      unfollow(subscription, function (err, res) {
+        if (err) return errback(err, res);
+        if (subscriptions === null) {
+          // once they're gotten, ensure our local cache
+          // knows about this subscription removal
+          onSubscriptions.push(removeSubscription);
+          return;
+        }
+        // we has subscriptions
+        removeSubscription();
+        errback(err, res);
+        
+        function removeSubscription() {
+          var index = getSubscriptionIndex(subscriptions, subscription);
+          if (index === -1) return;
+          subscriptions.splice(index, 1);
+        }
+      })
+    },
+    isFollowing: function (subscription, errback) {
+      function finish(err) {
+        errback(err, subscriptionsContain(subscriptions, subscription))
       }
-      // if we're currently getting it, add this errback to the
-      // array of folks waiting
-      if (gettingSubscriptions) {
-        return onSubscriptions.push(finish);
-      }
-      onSubscriptions.push(finish);
-      gettingSubscriptions = true;
-      subscriptionsClient.get({
-        lftoken: token
-      }, function (err, subs) {
-        subscriptions = subs || [];
-        gettingSubscriptions = false;
-        finishAll();
+      withUser(function (user) {
+        var token = user.get('token');
+        // once we have it memoized, just call errback
+        if (subscriptions) {
+          return finish();
+        }
+        // if we're currently getting it, add this errback to the
+        // array of folks waiting
+        if (gettingSubscriptions) {
+          return onSubscriptions.push(finish);
+        }
+        onSubscriptions.push(finish);
+        gettingSubscriptions = true;
+        subscriptionsClient.get({
+          lftoken: token
+        }, function (err, subs) {
+          subscriptions = subs || [];
+          gettingSubscriptions = false;
+          finishAll();
+        });
       });
-    });
-  }
+    }
+  };
 }
 
 function subscriptionsContain(subscriptions, subscription) {
+  return getSubscriptionIndex(subscriptions, subscription) !== -1;
+}
+
+function getSubscriptionIndex(subscriptions, subscription) {
   var subscribedTopics = subscriptions
     .map(function (s) {
       return s.to
     });
   var thisSubscriptionTopic = subscription.to;
-  return subscribedTopics.indexOf(thisSubscriptionTopic) !== -1;
+  var index = subscribedTopics.indexOf(thisSubscriptionTopic);
+  return index;
 }
 
 function withUser(callback) {

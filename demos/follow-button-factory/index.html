@@ -1,0 +1,19 @@
+<html>
+<head>
+<script src="https://demo.ep.livefyre.com/media/ZGVtby5lcC5saXZlZnlyZS5jb20=/javascripts/customprofiles.js"></script>
+<script src="//cdn.livefyre.com/Livefyre.js"></script>
+</head>
+<body>
+    <button id="auth-button">Log in</button>
+    <div id="follow-buttons"></div>
+<!-- scripts -->
+    <script src="../../lib/cajon/cajon.js"></script>
+    <script src="../../config/requirejs.conf.js"></script>
+    <script>
+        require.config({
+            baseUrl: '../../'
+        });
+        require(['demos/follow-button-factory/follow-button-factory-demo']);
+    </script>
+</body>
+</html>

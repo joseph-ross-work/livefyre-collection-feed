@@ -18,11 +18,10 @@ function FollowButton(opts) {
     this._unfollow = opts.unfollow || function (subscription, errback) { errback(); };
     if (typeof opts.isFollowing === 'function') {
         opts.isFollowing(this.subscription, function (err, isFollowing) {
-            debugger;
-            self._setFollowing(isFollowing);
+            self.setFollowing(isFollowing);
         })
     }
-    this._setFollowing(false);
+    this.setFollowing(false);
     this._button.$el.addClass('lf-btn-default');
     this._button.$el.addClass('lf-btn-xs');
 };
@@ -48,10 +47,9 @@ FollowButton.prototype.setElement = function () {
     return ret;
 }
 
-FollowButton.prototype._setFollowing = function (isFollowing) {
+FollowButton.prototype.setFollowing = function (isFollowing) {
     var command;
     var errback;
-    console.log('_setFollowing', isFollowing);
     if (isFollowing) {
         command = createUnfollowCommand(this.subscription, this._unfollow);
         errback = this._unfollowErrback.bind(this);
@@ -68,14 +66,14 @@ FollowButton.prototype._unfollowErrback = function (err) {
     if (err) {
         return console.error('Error unfollowing', err);
     }
-    this._setFollowing(false);
+    this.setFollowing(false);
 }
 
 FollowButton.prototype._followErrback = function (err) {
     if (err) {
         return console.error('Error following', err);
     }
-    this._setFollowing(true);
+    this.setFollowing(true);
 }
 
 FollowButton.prototype.setLabel = function (label) {

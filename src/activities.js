@@ -11,8 +11,9 @@ var PassThrough = require('stream/passthrough');
  * @param topic {string} The topic you want activities for
  *   e.g. 'urn:livefyre:demo.fyre.co:site=362588:topic=mlb:topicStream'
  */
-function ActivityCollection(topic) {
+function ActivityCollection(topic, token) {
     this._topic = topic;
+    this._token = token;
 }
 
 /**
@@ -23,11 +24,19 @@ function ActivityCollection(topic) {
 ActivityCollection.prototype.createArchive = function () {
     var archive = new PassThrough();
     var topic = this._topic;
-    withUser(function (user) {
-        var chronosStream = new ChronosStream(topic);
-        chronosStream.auth(user.get('token'));
-        chronosStream.pipe(archive);
-    });
+    var token = this._token;
+    var chronosStream = new ChronosStream(topic);
+    if (token) {
+        withToken(token)
+    } else {
+        withUser(function (user) {
+            withToken(user.get('token'));
+        });
+    }
+    function withToken(token) {
+        chronosStream.auth(token);
+        chronosStream.pipe(archive);        
+    }
     return archive;
 };
 
@@ -40,9 +49,17 @@ ActivityCollection.prototype.createUpdater = function () {
         environment: 'production'
     });
     var topic = this._topic;
-    withUser(function (user) {
-        updater.connect(user.get('token'), topic);
-    });
+    var token = this._token;
+    if (token) {
+        withToken(token);
+    } else {
+        withUser(function (user) {
+            withToken(user.get('token'));
+        });
+    }
+    function withToken(token) {
+        updater.connect(token, topic);
+    }
     return updater;
 };
 

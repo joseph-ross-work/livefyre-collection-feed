@@ -23,7 +23,7 @@ function PersonalizedActivityCollection(token) {
 PersonalizedActivityCollection.prototype._setToken = function (token) {
     var tokenData = parseToken(token);
     var topic = personalizedTopic(tokenData.network, tokenData.userId);
-    var activityCollection = new ActivityCollection(topic);
+    var activityCollection = new ActivityCollection(topic, token);
     this._activities = activityCollection;
     this._events.emit('activities', activityCollection);
 };

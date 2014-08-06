@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.livefyre.com/libs/livefyre-bootstrap/v1.3.1/livefyre-bootstrap.min.css" />
+    <style>
+    .lf-pos-bottom {
+        margin-top: 30px;
+    }
+    </style>
+</head>
+<body class="lf" style="min-height: 500px;">
+    <button id="auth-button">Log in</button>
+    <div id="rosstest"></div>
+    <!-- scripts -->
+    <script src="../../lib/cajon/cajon.js"></script>
+    <script src="../../config/requirejs.conf.js"></script>
+    <script>
+        require.config({
+            baseUrl: '../../'
+        });
+        require(['demos/follow-dropdown/follow-dropdown-demo']);
+    </script>
+</body>
+</html>

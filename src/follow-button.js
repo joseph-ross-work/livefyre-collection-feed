@@ -16,12 +16,13 @@ function FollowButton(opts) {
     this._button = new Button(createFollowCommand(opts.subscription));
     this._follow = opts.follow || function (subscription, errback) { errback(); };
     this._unfollow = opts.unfollow || function (subscription, errback) { errback(); };
+    this.setFollowing(false);
     if (typeof opts.isFollowing === 'function') {
         opts.isFollowing(this.subscription, function (err, isFollowing) {
+            console.log('checked isFollowing on FollowButton create', isFollowing, opts.subscription);
             self.setFollowing(isFollowing);
         })
     }
-    this.setFollowing(false);
     this._button.$el.addClass('lf-btn-default');
     this._button.$el.addClass('lf-btn-xs');
 };

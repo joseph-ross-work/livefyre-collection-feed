@@ -17,11 +17,14 @@ function Dropdown(opts) {
     View.apply(this, arguments);
     this._button = this._createButton();
     this._popover = null;
+    this._innerEl = document.createElement('div');
+    this._innerEl.classList.add('lf-follow-dropdown');
 }
 inherits(Dropdown, View);
 
 Dropdown.prototype._createButton = function () {
     var cmd = new Command(function () {
+        console.log('dropdown command', this._popover);
         if (!this._popover) {
             this._popover = this._createPopover();
         }
@@ -36,7 +39,7 @@ Dropdown.prototype._createButton = function () {
 Dropdown.prototype._createPopover = function () {
     var self = this;
     var popover = new Popover({
-        parentEl: this.el
+        parentEl: this._innerEl
     });
     var $el = $('<ul />');
     this.opts.tags.forEach(function (tag) {
@@ -82,8 +85,10 @@ Dropdown.prototype.setElement = function () {
 /** @override */
 Dropdown.prototype.render = function() {
     View.prototype.render.call(this);
+    var span = document.createElement('span');
     this._button.render();
-    this.$el.append(this._button.$el);
+    this._innerEl.appendChild(this._button.el);
+    this.el.appendChild(this._innerEl);
 };
 
 /** @override */

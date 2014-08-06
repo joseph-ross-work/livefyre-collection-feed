@@ -10,6 +10,11 @@ function FollowButtonFactory(opts) {
 }
 
 FollowButtonFactory.prototype.create = function (subscription) {
+    if (typeof subscription === 'string') {
+        subscription = {
+            to: subscription
+        };
+    }
     var button = new FollowButton({
         subscription: subscription,
         isFollowing: this._isFollowing,

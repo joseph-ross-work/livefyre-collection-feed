@@ -3,6 +3,7 @@
 </head>
 <body>
     <button id="auth-button">Log in</button>
+    <div id="follow-buttons"></div>
     <div id="feed"></div>
 <!-- scripts -->
     <script src="https://demo.ep.livefyre.com/media/ZGVtby5lcC5saXZlZnlyZS5jb20=/javascripts/customprofiles.js"></script>
@@ -26,6 +27,38 @@
             el: document.getElementById('feed'),
             // activities: new CollectionFeed.Activities(topic)
             activities: new CollectionFeed.PersonalizedActivities()
+        });
+        var subscriptions = [
+          {
+            "to": "urn:livefyre:demo.fyre.co:site=362588:topic=los_angeles",
+            "type": "personalStream"
+          },
+          {
+            "to": "urn:livefyre:demo.fyre.co:site=362588:topic=mlb",
+            "type": "personalStream"
+          },
+          {
+            "to": "urn:livefyre:demo.fyre.co:site=362588:topic=business",
+            "type": "personalStream"
+          },
+          {
+            "to": "urn:livefyre:demo.fyre.co:site=362588:topic=sports",
+            "type": "personalStream"
+          },
+          {
+            "to": "urn:livefyre:demo.fyre.co:site=362588:topic=entertainment",
+            "type": "personalStream"
+          }
+        ];
+
+        var followButtonFactory = new (CollectionFeed.FollowButtonFactory)();
+        var followButtons = document.getElementById('follow-buttons');
+
+        subscriptions.forEach(function (subscription) {
+          var topic = document.createElement('div');
+          topic.appendChild(document.createTextNode(subscription.to));
+          topic.appendChild(followButtonFactory.create(subscription.to));
+          followButtons.appendChild(topic);
         });
     </script>
 </body>

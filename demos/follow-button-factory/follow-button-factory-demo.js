@@ -12,13 +12,6 @@ Livefyre.require(['lfep-auth-delegate#0'], function(LFEPDelegate) {
     }));
 });
 
-// var token = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJkb21haW4iOiAiZGVtby5meXJlLmNvIiwgImV4cGlyZXMiOiAxNDA5Mjc4ODg4LjgyMDM0OSwgInVzZXJfaWQiOiAic3lzdGVtIn0.EqskRFnL_Ewp41veS8mMBNlGWQYcQ1MW-x9cqVrHcPM';
-// auth.authenticate({
-//     livefyre: token
-// });
-// end auth
-
-
 var FollowButtonFactory = require('collection-feed/follow-button-factory');
 
 var subscriptions = [
@@ -50,6 +43,6 @@ var followButtons = document.getElementById('follow-buttons');
 subscriptions.forEach(function (subscription) {
   var topic = document.createElement('div');
   topic.appendChild(document.createTextNode(subscription.to));
-  topic.appendChild(followButtonFactory.create(subscription));
+  topic.appendChild(followButtonFactory.create(subscription.to));
   followButtons.appendChild(topic);
 });

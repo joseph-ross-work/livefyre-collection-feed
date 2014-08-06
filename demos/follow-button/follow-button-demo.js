@@ -1,6 +1,7 @@
 var activityMocks = require('activity-mocks');
 
 // auth
+
 var createAuthButton = require('auth/contrib/auth-button');
 var auth = require('livefyre-auth');
 var authButton = createAuthButton(auth, document.getElementById('auth-button'));
@@ -11,6 +12,7 @@ auth.authenticate({
     livefyre: token
 });
 
+var subscriptionsClient = require('collection-feed/subscriptions-client');
 var FollowButton = require('collection-feed/follow-button');
 var followButtonsEl = document.getElementById('follow-buttons');
 var subscriptions = [
@@ -35,19 +37,76 @@ var subscriptions = [
     "type": "personalStream"
   }
 ];
-var topics = subscriptions.map(function (subscription) {
-    return subscription.to;
-})
-var followButtons = []
-topics.forEach(function (topic) {
+
+var isFollowing = (function () {
+  var subscriptions = null;
+  var gettingSubscriptions = false;
+  var onSubscriptions = [];
+  function finishAll() {
+    var cb;
+    while (cb = onSubscriptions.pop()) {
+      cb();
+    }
+  }
+  return function (subscription, errback) {
+    function finish(err) {
+      errback(err, subscriptionsContain(subscriptions, subscription))
+    }
+    withUser(function (user) {
+      var token = user.get('token');
+      // once we have it memoized, just call errback
+      if (subscriptions) {
+        return finish();
+      }
+      // if we're currently getting it, add this errback to the
+      // array of folks waiting
+      if (gettingSubscriptions) {
+        return onSubscriptions.push(finish);
+      }
+      onSubscriptions.push(finish);
+      gettingSubscriptions = true;
+      subscriptionsClient.get({
+        lftoken: token
+      }, function (err, subs) {
+        subscriptions = subs || [];
+        gettingSubscriptions = false;
+        finishAll();
+      });
+    });
+  }
+}())
+
+function subscriptionsContain(subscriptions, subscription) {
+  var subscribedTopics = subscriptions
+    .map(function (s) {
+      return s.to
+    });
+  var thisSubscriptionTopic = subscription.to;
+  return subscribedTopics.indexOf(thisSubscriptionTopic) !== -1;
+}
+
+var followButtons = [];
+subscriptions.forEach(function (subscription) {
     var button = new FollowButton({
-        topic: topic,
+        subscription: subscription,
+        isFollowing: isFollowing,
         follow: function (subscription, errback) {
           withUser(function (user) {
             subscriptionsClient.create({
               lftoken: user.get('token'),
               // todo: followButton should support opts.subscription not opts.topic
-              subscriptions: [subscriptions[0]]
+              subscriptions: [subscription]
+            }, function (err, res) {
+              errback(err, res);
+            })
+          })
+        },
+        unfollow: function (subscription, errback) {
+          withUser(function (user) {
+            subscriptionsClient.delete({
+              lftoken: user.get('token'),
+              // todo: followButton should support opts.subscription not opts.topic
+              subscriptions: [subscription]
             }, function (err, res) {
               errback(err, res);
             })
@@ -56,28 +115,37 @@ topics.forEach(function (topic) {
     });
     followButtons.push(button);
     button.render();
-    followButtonsEl.appendChild(button.el);
+    var topicEl = document.createElement('div');
+    topicEl.appendChild(document.createTextNode(subscription.to));
+    topicEl.appendChild(button.el);
+    followButtonsEl.appendChild(topicEl);
 })
 
 var subscription = {
   "to": "urn:livefyre:demo.fyre.co:site=362588:topic=los_angeles",
   "type": "personalStream"
 };
-var subscriptionsClient = require('collection-feed/subscriptions-client');
 
-withUser(function (user) {
-  subscriptionsClient.get({
-    lftoken: user.get('token')
-  }, function (err, subs) {
-    console.log('subscriptions', subs);
-  });
-  subscriptionsClient.create({
-    lftoken: user.get('token'),
-    subscriptions: [subscription]
-  }, function (err, res) {
-    console.log('subscribed', res);
-  })
-})
+// withUser(function (user) {
+//   var token = user.get('token');
+//   subscriptionsClient.get({
+//     lftoken: token
+//   }, function (err, subs) {
+//     console.log('subscriptions', subs);
+//   });
+//   subscriptionsClient.create({
+//     lftoken: token,
+//     subscriptions: [subscription]
+//   }, function (err, res) {
+//     console.log('subscribed', res);
+//   });
+//   subscriptionsClient.delete({
+//     lftoken: token,
+//     subscriptions: [subscription]
+//   }, function (err, res) {
+//     console.log('deleted', res);
+//   })
+// })
 
 
 function withUser(callback) {

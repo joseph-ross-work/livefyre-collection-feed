@@ -48,6 +48,31 @@ exports.create = function (opts, errback) {
     });
 }
 
+/**
+ * Delete a subscription
+ */
+exports.delete = function (opts, errback) {
+    var userUrn = opts.userUrn || URN.forUser(URN.userFromToken(opts.lftoken))
+    var req = $.ajax({
+        method: 'PATCH',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            delete: opts.subscriptions
+        }),
+        url: userSubscriptionsUrl({
+            lftoken: opts.lftoken,
+            userUrn: userUrn,
+            quillHost: opts.host || quillHost(opts)
+        })
+    });
+    req.done(function (res, textStatus, jqXhr) {
+        errback(null, res.data);
+    });
+    req.fail(function (res) {
+        errback(new Error('HTTP Error deleting subscriptions: '+JSON.stringify(res)))
+    });
+}
+
 var userSubscriptionsUrlTemplate = 'http://{quillHost}/api/v4/{userUrn}:subscriptions/?lftoken={lftoken}';
 function userSubscriptionsUrl (opts) {
     return userSubscriptionsUrlTemplate

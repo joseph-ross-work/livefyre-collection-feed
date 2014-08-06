@@ -8,13 +8,20 @@ var packageAttribute = require('./package-attribute');
 require('less!./styles/follow-button.less');
 
 function FollowButton(opts) {
+    var self = this;
     View.apply(this, arguments);
     opts = opts || {};
     opts.label = opts.label || 'follow';
-    this.topic = opts.topic;
-    this._button = new Button(createFollowCommand(opts.topic));
+    this.subscription = opts.subscription;
+    this._button = new Button(createFollowCommand(opts.subscription));
     this._follow = opts.follow || function (subscription, errback) { errback(); };
     this._unfollow = opts.unfollow || function (subscription, errback) { errback(); };
+    if (typeof opts.isFollowing === 'function') {
+        opts.isFollowing(this.subscription, function (err, isFollowing) {
+            debugger;
+            self._setFollowing(isFollowing);
+        })
+    }
     this._setFollowing(false);
     this._button.$el.addClass('lf-btn-default');
     this._button.$el.addClass('lf-btn-xs');
@@ -46,10 +53,10 @@ FollowButton.prototype._setFollowing = function (isFollowing) {
     var errback;
     console.log('_setFollowing', isFollowing);
     if (isFollowing) {
-        command = createUnfollowCommand(this.topic, this._unfollow);
+        command = createUnfollowCommand(this.subscription, this._unfollow);
         errback = this._unfollowErrback.bind(this);
     } else {
-        command = createFollowCommand(this.topic, this._follow);
+        command = createFollowCommand(this.subscription, this._follow);
         errback = this._followErrback.bind(this);
     }
     this._button._setCommand(command);
@@ -80,10 +87,10 @@ FollowButton.prototype._getLabel = function (isFollowing) {
     return isFollowing ? 'unfollow' : 'follow';
 }
 
-function createFollowCommand(topic, follow) {
+function createFollowCommand(subscription, follow) {
     var command = new Command(function (errback) {
         console.log('follow');
-        follow(topic, function (err) {
+        follow(subscription, function (err) {
             if (typeof errback !== 'function') {
                 return;
             }
@@ -93,10 +100,10 @@ function createFollowCommand(topic, follow) {
     return command;
 }
 
-function createUnfollowCommand(topic, unfollow) {
+function createUnfollowCommand(subscription, unfollow) {
     var command = new Command(function (errback) {
         console.log('unfollow');
-        unfollow(function (err, res) {
+        unfollow(subscription, function (err, res) {
             if (typeof errback !== 'function') {
                 return;
             }

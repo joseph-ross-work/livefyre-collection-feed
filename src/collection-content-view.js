@@ -1,7 +1,10 @@
 module.exports = CollectionContentView;
 
+var BaseContentView = require('./base-content-view');
 var FeedContentViewFactory = require('streamhub-feed/content-view-factory');
-var feedContentViewFactory = new FeedContentViewFactory();
+var feedContentViewFactory = new FeedContentViewFactory({
+    contentTypeView: BaseContentView
+});
 var CompositeView = require('view/composite-view');
 var TagsHeaderView = require('./tags-header-view');
 

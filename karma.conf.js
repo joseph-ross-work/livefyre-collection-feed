@@ -16,9 +16,12 @@ module.exports = function(config) {
     files: [
       'test/test-main.js',
       'config/requirejs.conf.js',
+      {pattern: 'package.json', included: false},
       {pattern: 'lib/**/*.js', included: false},
+      {pattern: 'lib/**/*.css', included: false},
       {pattern: 'lib/**/*.mustache', included: false},
-      {pattern: 'src/**/*.js', included: false},
+      {pattern: 'src/**/*', included: false},
+      {pattern: 'dist/**/*', included: false},
       {pattern: 'test/spec/**/*.js', included: false},
       {pattern: 'node_modules/**/*', included: false}
     ],

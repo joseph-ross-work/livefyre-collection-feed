@@ -2,7 +2,7 @@ var activityToContent = require('collection-feed').activityToContent;
 var activityMocks = require('activity-mocks');
 var assert = require('chai').assert;
 
-describe('collection-feed', function () {
+describe('collection-feed.activityToContent', function () {
     it('is a function', function () {
         assert.instanceOf(activityToContent, Object);
         assert.instanceOf(activityToContent, Function);
@@ -32,7 +32,7 @@ describe('collection-feed', function () {
     it('can transform a site-post-collection activity with extensions', function () {
         var activity = activityMocks.create('livefyre.sitePostCollection');
         var content = activityToContent(activity);
-        assert.equal(content.attachments.length, 1);
+        assert.equal(content.attachments.length, 2);
         assert.equal(content.attachments[0].type, 'photo');
         assert.equal(content.title, activity.object.title);
         assert.instanceOf(content.extensions, Object);

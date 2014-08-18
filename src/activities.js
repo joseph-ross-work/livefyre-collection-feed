@@ -25,7 +25,9 @@ ActivityCollection.prototype.createArchive = function () {
     var archive = new PassThrough();
     var topic = this._topic;
     var token = this._token;
-    var chronosStream = new ChronosStream(topic);
+    var chronosStream = new ChronosStream(topic, {
+        highWaterMark: 1
+    });
     if (token) {
         withToken(token)
     } else {

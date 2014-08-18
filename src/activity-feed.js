@@ -34,12 +34,20 @@ ActivityFeed.prototype._write = function (chunk, done) {
 
 ActivityFeed.prototype.add = function (activity) {
     var content;
-    try {
-        content = activityToContent(activity);        
-    } catch (e) {
-        console.error("ActivityFeed: Error creating content from activity. Skipping");
-        // return;
-        throw e;
+    // .add can be called with things that are already LivefyreContent
+    // so we shouldn't try to adapt a second time
+    if (activity.typeUrn) {
+        content = activity;
+    }
+    // if we're being passed an activity (not Content), try to adapt it
+    if ( ! content) {
+        try {
+            content = activityToContent(activity);        
+        } catch (e) {
+            console.error("ActivityFeed: Error creating content from activity. Skipping");
+            // return;
+            throw e;
+        }
     }
     return ContentListView.prototype.add.call(this, content);
 };

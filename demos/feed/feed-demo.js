@@ -21,7 +21,7 @@ var feed = new CollectionFeed.ActivityFeed({
 });
 
 feed.on('error', function (e) {
-    console.error("ActivityFeed error: ": e, e);
+    console.error("ActivityFeed error: " + e, e);
 });
 
 var mockActivity = activityMocks.create('livefyre.sitePostCollection');

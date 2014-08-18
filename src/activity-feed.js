@@ -22,8 +22,25 @@ inherits(ActivityFeed, ContentListView);
 
 ActivityFeed.prototype.elClass += ' lf-collection-feed';
 
+ActivityFeed.prototype._write = function (chunk, done) {
+    console.log('AF._write', arguments);
+    try {
+        ContentListView.prototype._write.apply(this, arguments);
+    } catch (e) {
+        done(e);
+        return;
+    }
+}
+
 ActivityFeed.prototype.add = function (activity) {
-    var content = activityToContent(activity);
+    var content;
+    try {
+        content = activityToContent(activity);        
+    } catch (e) {
+        console.error("ActivityFeed: Error creating content from activity. Skipping");
+        // return;
+        throw e;
+    }
     return ContentListView.prototype.add.call(this, content);
 };
 

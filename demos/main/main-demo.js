@@ -1,4 +1,4 @@
-var activityToContent = require('collection-feed');
+var activityToContent = require('collection-feed/activity-to-content');
 var activityMocks = require('activity-mocks');
 var ContentViewFactory = require('streamhub-sdk/content/content-view-factory');
 var asLivefyreContentView = require('streamhub-sdk/content/views/mixins/livefyre-content-view-mixin');
@@ -21,7 +21,6 @@ if (content.extensions && content.extensions.abstract) {
     })
 }
 
-debugger;
 var contentView = createContentView(content);
 
 contentView.setElement(document.getElementById('main'));

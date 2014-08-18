@@ -28,6 +28,9 @@
             // activities: new CollectionFeed.Activities(topic)
             activities: new CollectionFeed.PersonalizedActivities()
         });
+        feed.on('error', function (e) {
+            console.error("ActivityFeed error: ": e, e);
+        });
         var subscriptions = [
           {
             "to": "urn:livefyre:demo.fyre.co:site=362588:topic=los_angeles",

@@ -1,6 +1,8 @@
 var activityToContent = require('collection-feed').activityToContent;
 var activityMocks = require('activity-mocks');
 var assert = require('chai').assert;
+var ActivityFeed = require('collection-feed/activity-feed');
+var sinon = require('sinon');
 
 describe('collection-feed.activityToContent', function () {
     it('is a function', function () {
@@ -39,5 +41,29 @@ describe('collection-feed.activityToContent', function () {
         assert.equal(content.extensions.publisher, 'LA Times');
         assert.typeOf(content.extensions.abstract, 'string');
         assert.equal(content.body, content.extensions.abstract);
+    });
+    it('throws on invalid site-post-collection activities', function () {
+        var invalidActivity = {"cc":["urn:livefyre:demo.fyre.co:site=362588:topic=los_angeles:subscribers"],"verb":"add","object":{"displayName":"Los Angeles","id":"urn:livefyre:demo.fyre.co:site=362588:topic=los_angeles","objectType":"urn:livefyre:entity=topic"},"published":"2014-08-18T21:35:13.203759Z"};
+        var content;
+        assert.throws(function () {
+            content = activityToContent(invalidActivity);
+        });
+    })
+});
+
+describe('collection-feed/activity-feed', function () {
+    it('emits error event when invalid activities are .written', function (done) {
+        var onErrorSpy = sinon.spy();
+        var feed = new ActivityFeed();
+        var invalidActivity = {"cc":["urn:livefyre:demo.fyre.co:site=362588:topic=los_angeles:subscribers"],"verb":"add","object":{"displayName":"Los Angeles","id":"urn:livefyre:demo.fyre.co:site=362588:topic=los_angeles","objectType":"urn:livefyre:entity=topic"},"published":"2014-08-18T21:35:13.203759Z"};
+        feed.on('error', onErrorSpy);
+        // bad one should go through and emit error event
+        feed.write(invalidActivity);
+        // try a good one after, and it should work
+        feed.write(activityMocks.create('livefyre.sitePostCollection'), function (e) {
+            assert.notOk(e);
+            assert.equal(onErrorSpy.callCount, 1);
+            done();
+        });
     });
 });

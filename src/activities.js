@@ -11,9 +11,13 @@ var PassThrough = require('stream/passthrough');
  * @param topic {string} The topic you want activities for
  *   e.g. 'urn:livefyre:demo.fyre.co:site=362588:topic=mlb:topicStream'
  */
-function ActivityCollection(topic, token) {
-    this._topic = topic;
-    this._token = token;
+function ActivityCollection(opts) {
+    if(typeof opts !== 'object')
+        throw new Error('ActivityCollection requires arguments')
+
+    this._topic = opts.topic;
+    this._token = opts.token;
+    this._environment = opts.environment;
 }
 
 /**
@@ -26,7 +30,8 @@ ActivityCollection.prototype.createArchive = function () {
     var topic = this._topic;
     var token = this._token;
     var chronosStream = new ChronosStream(topic, {
-        highWaterMark: 1
+        highWaterMark: 1,
+        environment: this._environment
     });
     if (token) {
         withToken(token)
@@ -47,8 +52,7 @@ ActivityCollection.prototype.createArchive = function () {
  */
 ActivityCollection.prototype.createUpdater = function () {
     var updater = new StreamClient({
-        debug: true,
-        environment: 'production'
+        environment: this._environment
     });
     var topic = this._topic;
     var token = this._token;

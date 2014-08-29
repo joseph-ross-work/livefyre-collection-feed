@@ -17,7 +17,7 @@ var topic = 'urn:livefyre:demo.fyre.co:site=362588:topic=world:topicStream';
 var feed = new CollectionFeed.ActivityFeed({
     el: document.getElementById('feed'),
     // activities: new CollectionFeed.Activities(topic)
-    activities: new CollectionFeed.PersonalizedActivities()
+    activities: new CollectionFeed.PersonalizedActivities({ })
 });
 
 feed.on('error', function (e) {

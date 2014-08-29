@@ -6,24 +6,32 @@ var auth = require('auth');
 var base64 = require('base64');
 var EventEmitter = require('event-emitter');
 
-function PersonalizedActivityCollection(token) {
+function PersonalizedActivityCollection(opts) {
     var self = this;
     // we'll set this to an activityCollection whenever the user logs in
     this._activities = null;
     this._events = new EventEmitter();
-    if (token) {
-        this._setToken(token);
+    this._environment = opts.environment;
+    console.log('opts ', opts)
+    if (opts.token) {
+        this._setToken(opts.token, opts.environment);
     } else {
+        console.log('without token')
         withUser(function (user) {
-            self._setToken(user.get('token'));
+            self._setToken(user.get('token'), opts.environment);
         });
     }
 };
 
-PersonalizedActivityCollection.prototype._setToken = function (token) {
+PersonalizedActivityCollection.prototype._setToken = function (token, env) {
+    console.log(arguments)
     var tokenData = parseToken(token);
     var topic = personalizedTopic(tokenData.network, tokenData.userId);
-    var activityCollection = new ActivityCollection(topic, token);
+    var activityCollection = new ActivityCollection({
+        topic: topic,
+        token: token,
+        environment: env
+    });
     this._activities = activityCollection;
     this._events.emit('activities', activityCollection);
 };
